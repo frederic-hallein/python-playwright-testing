@@ -1,5 +1,7 @@
-from src import Page
+from playwright.sync_api import Page
 
-class HomePage(Page):
-    def __init__(self, page):
-        self.page = page
+from src.pages.basepage import BasePage
+
+class HomePage(BasePage):
+    def __init__(self, page: Page):
+        super().__init__(page)

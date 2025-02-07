@@ -1,22 +1,19 @@
 import pytest
+import yaml
+
+from playwright.sync_api import Page
 
 from src.pages.login.loginpage import LoginPage
 from src.navigation import Navigation
 
-# from src import shapes
+@pytest.fixture(scope="function")
+def user():
+    return yaml.load(open("res/user.yaml"), Loader=yaml.FullLoader)["user"]
 
-# @pytest.fixture
-# def my_rectangle():
-#     return shapes.Rectangle(10, 5)
+@pytest.fixture(scope="function")
+def navigation(page: Page):
+    return Navigation(page)
 
-# @pytest.fixture
-# def other_rectangle():
-#     return shapes.Rectangle(20, 2)
-
-@pytest.fixture(scope="class")
-def navigation():
-    return Navigation()
-
-@pytest.fixture(scope="class")
-def login_page():
-    return LoginPage()
+@pytest.fixture(scope="function")
+def login_page(page: Page):
+    return LoginPage(page)
