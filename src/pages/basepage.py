@@ -1,80 +1,65 @@
+
 import yaml
 
-from playwright.sync_api import Page, Locator
+from playwright.sync_api import Page, Locator, expect
 
 from src.logger import console_logger, LogLevel
 
-c_logger = console_logger(name="page", level=LogLevel.DEBUG)
+c_logger = console_logger(name="BasePage", level=LogLevel.DEBUG)
 
 class BasePage:
-    def __init__(self, page: Page):
-        # self.browser = None
-        # self.context = None
-        # self.page = None
-        self.page = page
+    def __init__(self, page: Page) -> None:
+        self._page = page
         self._urls = yaml.load(open("res/urls.yaml"), Loader=yaml.FullLoader)["urls"]
-        
 
-    # def open_browser(self, browser: str="chromium", headless: bool=False, maximize_window: bool=True):
-    #     c_logger.info(f"Opening browser")
-    #     playwright = sync_playwright().start()
+    # PAGE LOCATORS ----------------------------------------------------
+    def get_page_locator_by_selector(self, selector: str) -> Locator:
+        """ get page locator by selector, i.e. XPATH or CSS """
+        return self._page.locator(selector) # TODO: extend with hastext
 
-    #     args = []
-    #     no_viewport = False
-    #     if maximize_window:
-    #         args.append("--start-maximized")
-    #         no_viewport = True
+    def get_page_locator_by_id(self, id: str) -> Locator:
+        """ get page locator by attribute name 'id' """
+        return self.get_page_locator_by_selector(f"#{id}")
 
-    #     match browser:
-    #         case "chromium": playwright_browser = playwright.chromium
-    #         case "webkit"  : playwright_browser = playwright.webkit
-    #         case "firefox" : playwright_browser = playwright.firefox
-    #         case _: raise AssertionError(f"Browser '{browser}' is not a valid browser")
+    def get_page_locator_by_role(self, role: str, name: str) -> Locator:
+        """ 
+        get page locator by explicit and implicit accessibility attributes,
+        this includes buttons, checkboxes, headings, links, lists, tables, etc
+        """
+        return self._page.get_by_role(role, name=name)
 
-    #     self.browser = playwright_browser.launch(headless=headless, args=args)
-    #     self.context = self.browser.new_context(no_viewport=no_viewport)
-    #     self.page = self.context.new_page()
+    def get_page_locator_by_text(self, text: str, exact: bool=False) -> Locator:
+        """ get page locator by text content """
+        return self._page.get_by_text(text, exact)
 
+    def get_page_locator_by_label(self, label: str, exact: bool=False) -> Locator:
+        """ get page loactor by a form control by associated label's text """
+        return self._page.get_by_label(label, exact)
 
-    def browse_to(self, url: str="base"):
+    # ACTIONS -----------------------------------------
+    def navigate_to(self, url: str="base") -> None:
         if url in self._urls: url = self._urls[url]
-        self.page.goto(url)
+        c_logger.info(msg=f"Navigating to '{url}'.")
+        self._page.goto(url)
 
-    # def close_browser(self):
-    #     c_logger.info(f"Closing browser")
-    #     if self.browser:
-    #         self.context.close()
-    #         self.browser.close()
-    #         self.browser = None
-    #         self.browser = None
-    #         self.page = None
-        
-    def pause_browser(self):
-        self.page.pause()
+    def pause_browser(self) -> None:
+        c_logger.info(msg=f"Browser paused.")
+        self._page.pause()
 
-    def get_element_by_selector(self, selector: str) -> Locator:
-        return self.page.locator(selector) # TODO: extend with hastext
+    def click_page_locator(self, page_locator: Locator) -> None:
+        page_locator.click()
 
-    def get_element_by_id(self, id: str) -> Locator:
-        return self.get_element_by_selector(f"#{id}")
+    def fill_page_locator(self, page_locator: Locator, text: str) -> None:
+        page_locator.fill(text)
 
-    def get_element_by_role(self, role: str, name: str) -> Locator:
-        return self.page.get_by_role(role, name=name)
+    # ASSERTIONS -----------------------------------------------------
+    def expect_correct_title(self, title: str) -> None:
+        expect(self._page, f"Expected following title to be visible: {title}").to_have_title(title)
 
-    def get_by_text(self, text: str, exact: bool=False) -> Locator:
-        self.page.get_by_text(text, exact)
+    def expect_page_locator_to_be_visible(self, page_locator: Locator) -> None:
+        expect(page_locator, f"Expected following locator to be visible: {page_locator}").to_be_visible()
 
-    def get_element_by_label(self, label: str, exact: bool=False) -> Locator:
-        return self.page.get_by_label(label, exact)
+    def expect_page_locator_to_contain_text(self, page_locator: Locator, text: str) -> None:
+        actual = page_locator.text_content()
+        expect(page_locator, f"Expected text '{text}', but got '{actual}' instead.").to_contain_text(text)
 
-    def get_element_by_placecholder(self, placeholder: str, exact: bool=False) -> Locator:
-        return self.page.get_by_placeholder(placeholder, exact)
-
-    def get_by_alt_text(self) -> Locator:
-        pass
-
-    def get_by_title(self) -> Locator:
-        pass
-
-    def get_by_test_id(self) -> Locator:
-        pass

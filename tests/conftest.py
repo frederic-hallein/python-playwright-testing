@@ -4,16 +4,12 @@ import yaml
 from playwright.sync_api import Page
 
 from src.pages.login.loginpage import LoginPage
-from src.navigation import Navigation
+from src.pages.homepage.homepage import HomePage
 
-@pytest.fixture(scope="function")
-def user():
-    return yaml.load(open("res/user.yaml"), Loader=yaml.FullLoader)["user"]
-
-@pytest.fixture(scope="function")
-def navigation(page: Page):
-    return Navigation(page)
-
-@pytest.fixture(scope="function")
-def login_page(page: Page):
+@pytest.fixture
+def login_page(page: Page) -> LoginPage:
     return LoginPage(page)
+
+@pytest.fixture
+def home_page(page: Page) -> HomePage:
+    return HomePage(page)
