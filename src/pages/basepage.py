@@ -3,6 +3,7 @@ import yaml
 
 from playwright.sync_api import Page, Locator, expect
 
+
 from src.logger import console_logger, LogLevel
 
 c_logger = console_logger(name="BasePage", level=LogLevel.DEBUG)
