@@ -5,7 +5,7 @@ from enum import Enum
 - NOTSET    (0): This level captures all messages, regardless of their severity.
 - DEBUG    (10): This level is used for anything that can help identify potential problems, like variable values or the steps that a program takes.
 - INFO     (20): This level is used to confirm that things are working as expected.
-- WARNING  (30): This level indicates that something unexpected happened, or there may be some problem in the near future (like ‘disk space low’). However, the software is still working as expected.
+- WARNING  (30): This level indicates that something unexpected happened, or there may be some problem in the near future (like 'disk space low'). However, the software is still working as expected.
 - ERROR    (40): This level indicates a more serious problem that prevented the software from performing a function.
 - CRITICAL (50): This level denotes a very serious error that might prevent the program from continuing to run.
 """

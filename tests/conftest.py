@@ -1,9 +1,8 @@
 import pytest
-import yaml
 
 from playwright.sync_api import Page
 
-from src.pages.login.loginpage import LoginPage
+from src.pages.loginpage.loginpage import LoginPage
 from src.pages.homepage.homepage import HomePage
 
 @pytest.fixture

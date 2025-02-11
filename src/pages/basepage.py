@@ -21,12 +21,12 @@ class BasePage:
         """ get page locator by attribute name 'id' """
         return self.get_page_locator_by_selector(f"#{id}")
 
-    def get_page_locator_by_role(self, role: str, name: str) -> Locator:
+    def get_page_locator_by_role(self, role: tuple[str, str]) -> Locator:
         """ 
         get page locator by explicit and implicit accessibility attributes,
         this includes buttons, checkboxes, headings, links, lists, tables, etc
         """
-        return self._page.get_by_role(role, name=name)
+        return self._page.get_by_role(role[0], name=role[-1])
 
     def get_page_locator_by_text(self, text: str, exact: bool=False) -> Locator:
         """ get page locator by text content """
