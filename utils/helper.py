@@ -1,5 +1,11 @@
+"""
+Should contain helper functions, i.e. functions that can be used anywhere 
+in the program that enhances the reusability of code.
+"""
+
 import random
 import string
+import yaml
 
 def generate_random_string(length=10, use_uppercase=True, use_lowercase=True, use_digits=True) -> str:
     """
@@ -29,3 +35,6 @@ def generate_random_string(length=10, use_uppercase=True, use_lowercase=True, us
     
     # Generate random string
     return ''.join(random.choices(char_set, k=length))
+
+def yaml_loader(path):
+    return yaml.load(open(path), Loader=yaml.FullLoader)

@@ -14,11 +14,16 @@ class LoginPage(BasePage):
     def log_in(self, username: str, password: str) -> None:
         login_button = self.get_page_locator_by_id(Locators.login_button)
 
+        self.navigate_to()
         self.fill_page_locator(self._username, username)
         self.fill_page_locator(self._password, password)
         self.click_page_locator(login_button)
 
     # ASSERTIONS -------------------------------------
+    def expect_title_to_have_text(self, text: str) -> None:
+        page_locator_title = self.get_page_locator_by_text(text)
+        self.expect_page_locator_to_be_visible(page_locator_title)
+
     def expect_login_page_to_be_visible(self) -> None:
         self.expect_page_locator_to_be_visible(self._username)
         self.expect_page_locator_to_be_visible(self._password)

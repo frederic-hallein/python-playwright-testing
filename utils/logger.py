@@ -17,7 +17,7 @@ class LogLevel(Enum):
     ERROR = logging.ERROR  # 40
     CRITICAL = logging.CRITICAL  # 50
 
-
+# TODO : for what is LogLvel used for ???
 def console_logger(name: str, level: LogLevel) -> logging.Logger:
     # Create a named logger
     logger = logging.getLogger(f"__{name}__")

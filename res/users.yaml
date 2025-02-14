@@ -1,0 +1,6 @@
+standardUser         : [standard_user, secret_sauce]
+lockedOutUser        : [locked_out_user, secret_sauce]
+problemUser          : [problem_user, secret_sauce]
+performanceGlitchUser: [performance_glitch_user, secret_sauce]
+errorUser            : [error_user, secret_sauce]
+visualUser           : [visual_user, secret_sauce]

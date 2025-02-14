@@ -1,44 +1,51 @@
 import pytest
 import yaml
+import os
 import json
+
 from collections.abc import Generator
 
-from playwright.sync_api import sync_playwright, Page
+from playwright.sync_api import Browser, BrowserContext, Page
 
 from src.pages.loginpage.loginpage import LoginPage
-from src.pages.homepage.homepage import HomePage
+from src.pages.inventorypage.inventorypage import InventoryPage
 
-base = yaml.load(open("res/urls.yaml"), Loader=yaml.FullLoader)["urls"]["base"]
-# storages = []
+def pytest_collection_modifyitems(items):
+    """ Modifies test items in place to ensure test classes run in a given order. """
+    CLASS_ORDER = [
+        "TestLogin", 
+        "TestLogOut", 
+        "TestSortingInventory"
+    ]
+    sorted_items = items.copy()
+      # read the class names from default items
+    class_mapping = {item: item.cls.__name__ for item in items}
 
-# TODO : 
-# (1) check if storage state file empty. If empty, save storage state, else make new context using storage state of specific user
-# (2) yield this page
+    # Iteratively move tests of each class to the end of the test queue
+    for class_ in CLASS_ORDER:
+        sorted_items = [it for it in sorted_items if class_mapping[it] != class_] + [
+            it for it in sorted_items if class_mapping[it] == class_
+        ]
+    items[:] = sorted_items
+
+@pytest.fixture(scope="session")
+def base() -> str:
+    return yaml.load(open("res/urls.yaml"), Loader=yaml.FullLoader).get("base")
+
 @pytest.fixture
-def page() -> Generator[Page, None, None]:
-    p = sync_playwright().start()
-    browser = p.chromium.launch(headless=False)
+def page(browser: Browser, base) -> Generator[Page, None, None]:
     context = browser.new_context()
     page = context.new_page()
     page.goto(base)
     yield page
-    # storage = context.storage_state() #path="playwright/.auth/state.json"
-    # storages.append(storage)
-    # if len(storages) == 6:
-    #     with open('playwright/.auth/state.json', 'w') as outfile:
-    #         json.dump(storages, outfile)
-
-    # context = browser.new_context(storage_state=storage)
-
+    context.storage_state(path=f"playwright/.auth/storage_state.json") # TODO : make context use it to skip log in step
     page.close()
     context.close()
-    browser.close()
-    p.stop()
 
 @pytest.fixture
-def login_page(page) -> LoginPage:
+def login_page(page: Page) -> LoginPage:
     return LoginPage(page)
 
 @pytest.fixture
-def home_page(page) -> HomePage:
-    return HomePage(page)
+def inventory_page(page: Page) -> InventoryPage:
+    return InventoryPage(page)
