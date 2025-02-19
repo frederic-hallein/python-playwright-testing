@@ -29,7 +29,7 @@ def console_logger(name: str, level: LogLevel) -> logging.Logger:
 
     # Set the formatter for the console handler
     formatter = logging.Formatter(
-        "\n%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
         datefmt="%Y-%m-%d %I:%M:%S",
     )
     console_handler.setFormatter(formatter)

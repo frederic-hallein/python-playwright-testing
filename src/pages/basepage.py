@@ -17,8 +17,8 @@ class BasePage:
         """ get page locator by selector, i.e. XPATH or CSS """
         return self._page.locator(selector) # TODO: extend with hastext
     
-    def get_page_locators_by_selector(self, selector: str) -> Locator:
-        """ get page locator by selector, i.e. XPATH or CSS """
+    def get_all_page_locators_by_selector(self, selector: str) -> Locator:
+        """ get all page locator by selector, i.e. XPATH or CSS """
         return self._page.locator(selector).all() # TODO: extend with hastext
 
     def get_page_locator_by_id(self, id: str) -> Locator:
@@ -35,10 +35,17 @@ class BasePage:
     def get_page_locator_by_text(self, text: str) -> Locator:
         """ get page locator by text content """
         return self._page.get_by_text(text)
+    
+    def get_all_page_locators_by_text(self, text: str) -> Locator:
+        """ get all page locator by text content """
+        return self._page.get_by_text(text).all()
 
     def get_page_locator_by_label(self, label: str) -> Locator:
         """ get page loactor by a form control by associated label's text """
         return self._page.get_by_label(label)
+
+    def get_child_page_locator(self, parent_page_locator: Locator, child_selector: Locator) -> Locator:
+        return parent_page_locator.locator(child_selector)
 
     # ACTIONS -----------------------------------------
     def navigate_to(self, url: str="base") -> None:

@@ -1,11 +1,12 @@
 import pytest
 import yaml
-import os
-import json
+import os.path
 
 from collections.abc import Generator
 
-from playwright.sync_api import Browser, BrowserContext, Page
+from playwright.sync_api import Browser, Page
+
+from utils.helper import yaml_loader
 
 from src.pages.loginpage.loginpage import LoginPage
 from src.pages.inventorypage.inventorypage import InventoryPage
@@ -13,9 +14,8 @@ from src.pages.inventorypage.inventorypage import InventoryPage
 def pytest_collection_modifyitems(items):
     """ Modifies test items in place to ensure test classes run in a given order. """
     CLASS_ORDER = [
-        "TestLogin", 
-        "TestLogOut", 
-        "TestSortingInventory"
+        "TestLoginPage", 
+        "TestInventoryPage"
     ]
     sorted_items = items.copy()
       # read the class names from default items
@@ -31,14 +31,22 @@ def pytest_collection_modifyitems(items):
 @pytest.fixture(scope="session")
 def base() -> str:
     return yaml.load(open("res/urls.yaml"), Loader=yaml.FullLoader).get("base")
-
+    
 @pytest.fixture
+def users() -> list[str]:
+    return yaml_loader("res/users.yaml")
+
+@pytest.fixture(scope="session")
 def page(browser: Browser, base) -> Generator[Page, None, None]:
-    context = browser.new_context()
+    path = "playwright/.auth/storage_state.json"
+    if os.path.exists(path):
+        context = browser.new_context(storage_state=path)
+    else:
+        context = browser.new_context()
     page = context.new_page()
     page.goto(base)
     yield page
-    context.storage_state(path=f"playwright/.auth/storage_state.json") # TODO : make context use it to skip log in step
+    context.storage_state(path=path)
     page.close()
     context.close()
 
