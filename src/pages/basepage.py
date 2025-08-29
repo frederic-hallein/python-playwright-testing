@@ -1,8 +1,5 @@
 from utils.helper import yaml_loader
-
 from playwright.sync_api import Page, Locator, expect
-
-
 from utils.logger import console_logger, LogLevel
 
 logger = console_logger(name="BasePage", level=LogLevel.DEBUG)
@@ -16,7 +13,7 @@ class BasePage:
     def get_page_locator_by_selector(self, selector: str) -> Locator:
         """ get page locator by selector, i.e. XPATH or CSS """
         return self._page.locator(selector) # TODO: extend with hastext
-    
+
     def get_all_page_locators_by_selector(self, selector: str) -> Locator:
         """ get all page locator by selector, i.e. XPATH or CSS """
         return self._page.locator(selector).all() # TODO: extend with hastext
@@ -26,7 +23,7 @@ class BasePage:
         return self.get_page_locator_by_selector(f"#{id}")
 
     def get_page_locator_by_role(self, role: tuple[str, str]) -> Locator:
-        """ 
+        """
         get page locator by explicit and implicit accessibility attributes,
         this includes buttons, checkboxes, headings, links, lists, tables, etc
         """
@@ -35,7 +32,7 @@ class BasePage:
     def get_page_locator_by_text(self, text: str) -> Locator:
         """ get page locator by text content """
         return self._page.get_by_text(text)
-    
+
     def get_all_page_locators_by_text(self, text: str) -> Locator:
         """ get all page locator by text content """
         return self._page.get_by_text(text).all()
@@ -71,13 +68,13 @@ class BasePage:
 
     def get_text_content(self, page_locator: Locator) -> str:
         return page_locator.text_content()
-    
+
     def get_list_text_content(self, page_locators: list[Locator]) -> list[str]:
         text = []
         for page_locator in page_locators:
             text.append(self.get_text_content(page_locator))
         return text
-    
+
     # ASSERTIONS -----------------------------------------------------
     # TODO : edit asserion messages to account for longer messages
     def expect_page_locator_to_be_visible(self, page_locator: Locator) -> None:

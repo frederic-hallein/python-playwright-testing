@@ -1,6 +1,9 @@
 import pytest
 import yaml
 import os.path
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from collections.abc import Generator
 
@@ -14,7 +17,7 @@ from src.pages.inventorypage.inventorypage import InventoryPage
 def pytest_collection_modifyitems(items):
     """ Modifies test items in place to ensure test classes run in a given order. """
     CLASS_ORDER = [
-        "TestLoginPage", 
+        "TestLoginPage",
         "TestInventoryPage"
     ]
     sorted_items = items.copy()
@@ -31,7 +34,7 @@ def pytest_collection_modifyitems(items):
 @pytest.fixture(scope="session")
 def base() -> str:
     return yaml.load(open("res/urls.yaml"), Loader=yaml.FullLoader).get("base")
-    
+
 @pytest.fixture
 def users() -> list[str]:
     return yaml_loader("res/users.yaml")

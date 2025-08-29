@@ -1,5 +1,6 @@
 import pytest
 import random
+
 from utils.helper import yaml_loader
 
 class TestInventoryPage:
@@ -41,6 +42,6 @@ class TestInventoryPage:
 
         # ACTIONS ----------------------------------------
 
-        
+
 
         # ASSERTIONS -------------------------------------
