@@ -3,12 +3,11 @@ import yaml
 import os.path
 import sys
 import os
+
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from collections.abc import Generator
-
 from playwright.sync_api import Browser, Page
-
 from utils.helper import yaml_loader
 
 from src.pages.loginpage.loginpage import LoginPage
@@ -42,10 +41,27 @@ def users() -> list[str]:
 @pytest.fixture(scope="session")
 def page(browser: Browser, base) -> Generator[Page, None, None]:
     path = "playwright/.auth/storage_state.json"
+    dir_path = os.path.dirname(path)
+    if not os.path.exists(dir_path):
+        os.makedirs(dir_path, exist_ok=True)
+
     if os.path.exists(path):
+        # Use existing storage state
         context = browser.new_context(storage_state=path)
     else:
+        # Create new context and storage state
         context = browser.new_context()
+        page = context.new_page()
+        page.goto(base)
+
+        # Perform login/setup here if needed
+        context.storage_state(path=path)
+        page.close()
+        context.close()
+
+        # Recreate context with new storage state
+        context = browser.new_context(storage_state=path)
+
     page = context.new_page()
     page.goto(base)
     yield page
@@ -60,3 +76,4 @@ def login_page(page: Page) -> LoginPage:
 @pytest.fixture
 def inventory_page(page: Page) -> InventoryPage:
     return InventoryPage(page)
+
