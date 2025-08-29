@@ -3,4 +3,4 @@
 .vscode/
 **/__pycache__/
 playwright/.auth
-
+notes.txt
