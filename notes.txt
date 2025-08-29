@@ -1,4 +1,0 @@
-TODO
-- add website used for tests in README
-- add specific test command to README
-- added use of PyLint in README
