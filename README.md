@@ -18,12 +18,18 @@ Automated end-to-end testing framework for web applications using Python and Pla
     python3 -m venv .venv
     ```
 
-3. **Install Python dependencies:**
+3. **Activate the virtual environment:**
     ```sh
-    pip install -r requirements.txt
+    source .venv/bin/activate
     ```
 
-4. **Install Playwright browsers:**
+
+4. **Using ```pip3```, install all dependencies:**
+    ```sh
+    pip3 install -r requirements.txt
+    ```
+
+5. **Install Playwright browsers:**
     ```sh
     playwright install
     ```
